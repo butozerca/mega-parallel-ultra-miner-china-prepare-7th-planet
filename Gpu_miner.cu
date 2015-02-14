@@ -11,24 +11,19 @@ void Gpu_hash(const char* input, int length, int nonce_offset, int difficulty, i
     memcpy(nonce_input+length, (void*)&nonce, 4);
     
     unsigned char digest[SHA256::DIGEST_SIZE];
-    memset(digest,0,SHA256::DIGEST_SIZE);
  
     SHA256 ctx = SHA256();
     ctx.init();
-    ctx.update(input, length);
+    ctx.update(nonce_input, length + 4);
     ctx.final(digest);
-    
-    
-    unsigned char digest2[SHA256::DIGEST_SIZE];
-    memset(digest2,0,SHA256::DIGEST_SIZE);
- 
-    SHA256 ctx = SHA256();
+
     ctx.init();
-    ctx.update(input, length);
-    ctx.final(digest2);
+    ctx.update(digest, 32);
+    ctx.final(nonce_input);
     
-    for (int i = 0; i < (difficulty >> 1); ++i){
-        
-    }
+    for (int i = 0; i < (difficulty >> 3); ++i)
+        if (nonce_input[i] != 0) return;
+    if (nonce_input[difficulty >> 3] <= 255 >> difficulty & 7)
+        *result = nonce;
 }
 }
