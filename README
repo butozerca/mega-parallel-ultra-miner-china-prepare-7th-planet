@@ -1,0 +1,2 @@
+Zeby skompilowac real-cpu i real-gpu potrzebna jest biblioteka libblkmaker
+W ubuntu można ją zainstalować sudo apt-get install libblkmaker-0.1-dev
