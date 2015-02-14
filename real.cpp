@@ -52,7 +52,7 @@ int main()
 			unsigned int id;
 			unsigned int size = blkmk_get_data(blktemplate, data, sizeof(data), time(nullptr), nullptr, &id);
 
-			nonce = miner.mine(data, nonce, 2); //TODO change difficulty
+			nonce = miner.mine(data, nonce, nonce + 1000000, 2); //TODO change difficulty and adjust nonce_end
 			*reinterpret_cast<int *>(data + 76) = nonce;
 
 			json_t *request = blkmk_submit_jansson(blktemplate, reinterpret_cast<const unsigned char *>(data), id, nonce);
