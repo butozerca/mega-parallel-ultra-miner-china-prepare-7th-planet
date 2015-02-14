@@ -33,18 +33,20 @@ int main () {
     Gpu_miner gpu_miner;
 
     int difficulty = 4;
-    
+    int max_nonce = 100000;
+
+
     for (auto &s: in) {
     
         auto start = std::chrono::high_resolution_clock::now();
-        cpu_miner.mine(s, 0, 4);
+        cpu_miner.mine(s, 0, max_nonce, 4);
         auto finish = std::chrono::high_resolution_clock::now();
     
         auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
         std::cout << "cpu mining took " << microseconds.count() << "µs\n";
     
         start = std::chrono::high_resolution_clock::now();
-        gpu_miner.mine(s, 0, 4);
+        gpu_miner.mine(s, 0, max_nonce, 4);
         finish = std::chrono::high_resolution_clock::now();
 
         microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
