@@ -2,7 +2,7 @@
 
 #include "Gpu_miner.hpp"
 
-int Gpu_miner::mine(std::string& input, int offset, int difficulty)
+int Gpu_miner::mine(std::string& input, int offset, int max_nonce, int difficulty)
 {
     cuInit(0);
     
