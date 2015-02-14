@@ -1,2 +1,2 @@
-Zeby skompilowac real-cpu i real-gpu potrzebna jest biblioteka libblkmaker
-W ubuntu można ją zainstalować sudo apt-get install libblkmaker-0.1-dev
+Żeby skompilować real-cpu i real-gpu potrzebne są biblioteki libblkmaker i libjansson
+W ubuntu można je zainstalować poleceniem sudo apt-get install libblkmaker-0.1-dev libjansson-dev

@@ -9,14 +9,15 @@
 extern "C"
 {
 #include <libblkmaker-0.1/blkmaker.h>
+#include <libblkmaker-0.1/blkmaker_jansson.h>
 }
 
 int main()
 {
-	blktemplate_t *blktemplate;
+	blktemplate_t *blktemplate = blktmpl_create();
+	json_t *request = blktmpl_request_jansson(blktmpl_addcaps(blktemplate), nullptr);
 
-	blktemplate = blktmpl_create();
-
+	json_decref(request);
 	blktmpl_free(blktemplate);
 	return 0;
 }

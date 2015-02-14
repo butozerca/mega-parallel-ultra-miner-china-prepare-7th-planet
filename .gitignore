@@ -29,3 +29,5 @@
 
 *.d
 main
+real-cpu
+real-gpu
