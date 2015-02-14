@@ -7,5 +7,5 @@
 
 class Gpu_miner : public Miner {
     public:
-        virtual int mine(const char *input, int offset, int difficulty);
+        virtual int mine(const char *input, int nonce_begin, int nonce_end, int difficulty);
 };

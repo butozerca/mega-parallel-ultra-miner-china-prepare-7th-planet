@@ -3,7 +3,7 @@
 #include "Gpu_miner.hpp"
 
 //TODO handle difficulty and input not being a string
-int Gpu_miner::mine(const char *input, int offset, int difficulty)
+int Gpu_miner::mine(const char *input, int nonce_begin, int nonce_end, int difficulty)
 {
     cuInit(0);
     
@@ -49,7 +49,7 @@ int Gpu_miner::mine(const char *input, int offset, int difficulty)
     int tmp[1]={-1};
     cuMemcpyHtoD(result, tmp, 4);
     
-    void* args[] = {&data, &size, &offset, &difficulty, &result};
+    void* args[] = {&data, &size, &nonce_begin, &difficulty, &result};
     res = cuLaunchKernel(Gpu_hash, gridX, gridY, gridZ, blockX, blockY, blockZ, 0, 0, args, 0);
     if (res != CUDA_SUCCESS){
         printf("cannot run kernel\n");
