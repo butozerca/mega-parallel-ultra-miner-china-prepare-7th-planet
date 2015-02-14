@@ -1,4 +1,4 @@
 class Miner {
     public:
-        virtual int mine(std::string& input, int offset, int difficulty) = 0;
+        virtual int mine(std::string& input, int offset, int max_nonce, int difficulty) = 0;
 }
