@@ -7,5 +7,5 @@
 
 class Gpu_miner : public Miner {
     public:
-        virtual void mine(std::vector<std::string>& input);
+        virtual int mine(std::string& input, int offset, int difficulty);
 };

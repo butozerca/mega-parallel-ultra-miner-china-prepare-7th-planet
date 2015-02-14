@@ -32,19 +32,24 @@ int main () {
     Cpu_miner cpu_miner;
     Gpu_miner gpu_miner;
 
-    auto start = std::chrono::high_resolution_clock::now();
-    cpu_miner.mine(in);
-    auto finish = std::chrono::high_resolution_clock::now();
+    int difficulty = 4;
+    
+    for (auto &s: in) {
+    
+        auto start = std::chrono::high_resolution_clock::now();
+        cpu_miner.mine(s, 0, 4);
+        auto finish = std::chrono::high_resolution_clock::now();
+    
+        auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
+        std::cout << "cpu mining took " << microseconds.count() << "µs\n";
+    
+        start = std::chrono::high_resolution_clock::now();
+        gpu_miner.mine(s, 0, 4);
+        finish = std::chrono::high_resolution_clock::now();
 
-    auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
-    std::cout << "cpu mining took " << microseconds.count() << "µs\n";
-
-    start = std::chrono::high_resolution_clock::now();
-    gpu_miner.mine(in);
-    finish = std::chrono::high_resolution_clock::now();
-
-    microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
-    std::cout << "OUR GLORIOUS GPU mining took " << microseconds.count() << "µs\n";
+        microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
+        std::cout << "OUR GLORIOUS GPU mining took " << microseconds.count() << "µs\n";
+    }
 
     return 0;
 }
