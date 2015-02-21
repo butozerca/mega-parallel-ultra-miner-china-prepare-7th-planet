@@ -26,6 +26,6 @@ real-gpu: real-gpu.o Gpu_miner.o Gpu_miner.ptx sha256.o
 	g++ -O2 -g -std=c++11 $^ -o $@ -lblkmaker-0.1 -lblkmaker_jansson-0.1 -lcuda -ljansson
 
 clean:
-	rm -rf main real-cpu real-gpu *.o *.d
+	rm -rf main real-cpu real-gpu *.o *.d *.ptx
 
 .PHONY: all clean
