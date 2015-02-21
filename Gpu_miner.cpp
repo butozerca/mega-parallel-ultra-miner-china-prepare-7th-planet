@@ -42,7 +42,7 @@ int Gpu_miner::mine(const char *input, int nonce_begin, int nonce_end, int diffi
 	int blockY=1;
     int blockZ=1;
     
-    const char* data=input.data();
+    const char* data=input;
     int size=input.size();
     CUdeviceptr result;
     cuMemAlloc(&result, 4);
