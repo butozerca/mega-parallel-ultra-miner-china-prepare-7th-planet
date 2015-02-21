@@ -1,5 +1,5 @@
 #include<cstdio>
-#include"sha256.hpp"
+#include"sha256cu.hpp"
 
 extern "C" {
 __global__ 
