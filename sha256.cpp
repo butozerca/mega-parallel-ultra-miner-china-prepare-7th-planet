@@ -161,5 +161,5 @@ void sha256(const char* input, int length, char* output)
     ctx.update( (unsigned char*)input, length);
     ctx.final(digest);
     
-    memset(output, digest, SHA256::DIGEST_SIZE);
+    memcpy(output, digest, SHA256::DIGEST_SIZE);
 }
