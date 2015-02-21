@@ -12,7 +12,7 @@ inline bool cmp_str_n(const unsigned char* A, const unsigned char* B, int n) {
 int Cpu_miner::mine(const char *input, int nonce_begin, int nonce_end, int difficulty)
 {   
     char threshold[(difficulty >> 3) + 1];
-    memset(threshold, 0, difficulty/8);
+    memset(threshold, 0, difficulty >> 3);
     threshold[difficulty >> 3] = (char)(255 >> (difficulty & 7));
     
     char in[80];

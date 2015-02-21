@@ -8,7 +8,7 @@
 #include "Cpu_miner.hpp"
 #include "Gpu_miner.hpp"
 
-const std::string file_in = "chuj.txt";
+const std::string file_in = "input.txt";
 
 
 int main () {
@@ -50,7 +50,7 @@ int main () {
         finish = std::chrono::high_resolution_clock::now();
 
         microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
-        std::cout << "OUR GLORIOUS GPU mining took " << microseconds.count() << "µs\n";
+        std::cout << "GPU mining took " << microseconds.count() << "µs\n";
     }
 
     return 0;
