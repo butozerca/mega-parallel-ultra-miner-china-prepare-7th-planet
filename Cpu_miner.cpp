@@ -24,6 +24,7 @@ int Cpu_miner::mine(const char *input, int nonce_begin, int nonce_end, int diffi
         char buf[32];
         sha256(in, 80, buf);   
         sha256(buf, 32, buf);
+        for (int i = 0; i < 32; ++i) printf("%d ", buf[i]); printf("\n");
         if (cmp_str_n((unsigned char*)buf, (unsigned char*)threshold, (difficulty >> 3) + 1))
             return j;
 	}

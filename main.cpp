@@ -20,6 +20,7 @@ int main () {
     while (input.good()) {
         std::string s;
         input >> s;
+        if (s.size() != 76) break;
         in.push_back(s);
     }
 
@@ -33,11 +34,11 @@ int main () {
     Gpu_miner gpu_miner;
 
     int difficulty = 4;
-    int max_nonce = 100000;
+    int max_nonce = 1;
 
 
     for (auto &s: in) {
-    
+        std::cout << "hashing: " << s << std::endl;
         auto start = std::chrono::high_resolution_clock::now();
         int res = cpu_miner.mine(s.c_str(), 0, max_nonce, difficulty);
         auto finish = std::chrono::high_resolution_clock::now();
