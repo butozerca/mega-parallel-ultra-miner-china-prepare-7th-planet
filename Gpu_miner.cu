@@ -6,7 +6,7 @@ __global__
 void Gpu_hash(const char* input, int length, int nonce_offset, int difficulty, int* result)
 {
     int nonce=blockIdx.x*blockDim.x+threadIdx.x;
-    char nonce_input[80];
+    unsigned char nonce_input[80];
     memcpy(nonce_input, input, length);
     memcpy(nonce_input+length, (void*)&nonce, 4);
     
