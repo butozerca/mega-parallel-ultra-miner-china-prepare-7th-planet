@@ -39,16 +39,16 @@ int main () {
     for (auto &s: in) {
     
         auto start = std::chrono::high_resolution_clock::now();
-        cpu_miner.mine(s.c_str(), 0, max_nonce, difficulty);
+        int res = cpu_miner.mine(s.c_str(), 0, max_nonce, difficulty);
         auto finish = std::chrono::high_resolution_clock::now();
-    
+        printf("cpu res=%d\n", res);
         auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
         std::cout << "cpu mining took " << microseconds.count() << "µs\n";
     
         start = std::chrono::high_resolution_clock::now();
-        gpu_miner.mine(s.c_str(), 0, max_nonce, difficulty);
+        res = gpu_miner.mine(s.c_str(), 0, max_nonce, difficulty);
         finish = std::chrono::high_resolution_clock::now();
-
+        printf("gpu res=%d\n", res);
         microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
         std::cout << "GPU mining took " << microseconds.count() << "µs\n";
     }
