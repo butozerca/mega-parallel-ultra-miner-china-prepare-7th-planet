@@ -28,6 +28,7 @@
 *.app
 
 *.d
+*.ptx
 main
 real-cpu
 real-gpu
