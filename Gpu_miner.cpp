@@ -35,10 +35,10 @@ int Gpu_miner::mine(const char *input, int nonce_begin, int nonce_end, int diffi
         exit(1);
     }
 	
-    int gridX=32;
+    int gridX=1024;
 	int gridY=1;
     int gridZ=1;
-	int blockX=32;
+	int blockX=80;
 	int blockY=1;
     int blockZ=1;
 

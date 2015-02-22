@@ -77,26 +77,35 @@ int main()
     Gpu_miner gpu_miner;
 
     int difficulty = 22;
-    int max_nonce = 10000000;
+    int min_nonce = 0, max_nonce = 10000000;
 
 
     for (auto &s: in) {
-        std::cout << "hashing: " << s << std::endl;
+        std::cout << "hash: " << s << std::endl;
+        std::cout << "CPU PART ----------" << std::endl;
         auto start = std::chrono::high_resolution_clock::now();
-        int res = cpu_miner.mine(s.c_str(), 0, max_nonce, difficulty);
+        int res = cpu_miner.mine(s.c_str(), min_nonce, max_nonce, difficulty);
         auto finish = std::chrono::high_resolution_clock::now();
-        printf("cpu nonce=%d\n", res);
-        auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
-        std::cout << "cpu mining took " << microseconds.count() << "µs\n";
+        printf("nonce= %d\n", res);
+        auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(finish-start);
+        std::cout << "mining took " << milliseconds.count() << "ms\n";
+        if (res != -1)
+            printf("speed: %ld KHash/s\n", ((res - min_nonce)/milliseconds.count()));
         confirm_nonce(s.c_str(), res, difficulty);
-    
+        
+
+        std::cout << "GPU PART ----------" << std::endl;
         start = std::chrono::high_resolution_clock::now();
-        res = gpu_miner.mine(s.c_str(), 0, max_nonce, difficulty);
+        res = gpu_miner.mine(s.c_str(), min_nonce, max_nonce, difficulty);
         finish = std::chrono::high_resolution_clock::now();
-        printf("gpu nonce=%d\n", res);
-        microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
-        std::cout << "GPU mining took " << microseconds.count() << "µs\n";
+        printf("nonce=%d\n", res);
+        milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(finish-start);
+        std::cout << "mining took " << milliseconds.count() << "ms\n";
+        if (res != -1)
+            printf("speed: %ld KHash/s\n", ((res - min_nonce)/milliseconds.count()));
         confirm_nonce(s.c_str(), res, difficulty);
+
+        printf("\n");
     }
 
     return 0;
