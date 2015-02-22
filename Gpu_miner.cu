@@ -16,7 +16,7 @@
 #define THREAD_VAR(offset) (shared_mem + BASE_OFFSET + THREAD_SIZE * threadIdx.x + (offset))
 
 #define M_BLOCK THREAD_VAR(M_BLOCK_OFFSET)
-#define M_H ((int *)(THREAD_VAR(M_H_OFFSET)))
+#define M_H ((unsigned int *)(THREAD_VAR(M_H_OFFSET)))
 #define W ((unsigned int *)(THREAD_VAR(W_OFFSET)))
 #define WV ((unsigned int *)(THREAD_VAR(WV_OFFSET)))
 #define NONCE_INPUT ((unsigned char*)(THREAD_VAR(NONCE_INPUT_OFFSET)))
@@ -77,8 +77,8 @@ void SHA256::transform(const unsigned char *message, unsigned int block_nb, char
 {
     uint32* w = W;
     uint32* wv = WV;
-    int* m_h = M_H;
-    int* sha256_k = (int*)shared_mem;
+    unsigned int* m_h = M_H;
+    unsigned int* sha256_k = (unsigned int*)shared_mem;
     uint32 t1, t2;
     const unsigned char *sub_block;
     int i;
@@ -116,14 +116,15 @@ void SHA256::transform(const unsigned char *message, unsigned int block_nb, char
 __device__
 void SHA256::init(char* shared_mem)
 {
-    M_H[0] = 0x6a09e667;
-    M_H[1] = 0xbb67ae85;
-    M_H[2] = 0x3c6ef372;
-    M_H[3] = 0xa54ff53a;
-    M_H[4] = 0x510e527f;
-    M_H[5] = 0x9b05688c;
-    M_H[6] = 0x1f83d9ab;
-    M_H[7] = 0x5be0cd19;
+    unsigned int *m_h = M_H;
+    m_h[0] = 0x6a09e667;
+    m_h[1] = 0xbb67ae85;
+    m_h[2] = 0x3c6ef372;
+    m_h[3] = 0xa54ff53a;
+    m_h[4] = 0x510e527f;
+    m_h[5] = 0x9b05688c;
+    m_h[6] = 0x1f83d9ab;
+    m_h[7] = 0x5be0cd19;
     m_len = 0;
     m_tot_len = 0;
 }
@@ -184,15 +185,15 @@ void sha256(const char* input, int length, char* output, char* shared_mem)
 
 extern "C" {
 __global__ 
-void Gpu_hash(const char* input, const int* sha_const, int length, int nonce_offset, int difficulty, int* result)
+void Gpu_hash(const char* input, const unsigned int* sha_const, int length, int nonce_offset, int difficulty, int* result)
 {
-    __shared__ char shared_mem[2000];
+    __shared__ char shared_mem[49152];
     
 
     printf("CHUJ1\n");
     if (threadIdx.x == 0)
         for (int i = 0; i < 64; ++i)
-            ((int*)shared_mem)[i] = sha_const[i];
+            ((unsigned int*)shared_mem)[i] = sha_const[i];
     
     __syncthreads();
 
