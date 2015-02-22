@@ -76,7 +76,7 @@ int main()
     Cpu_miner cpu_miner;
     Gpu_miner gpu_miner;
 
-    int difficulty = 25;
+    int difficulty = 22;
     int max_nonce = 10000000;
 
 
