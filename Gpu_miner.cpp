@@ -35,12 +35,14 @@ int Gpu_miner::mine(const char *input, int nonce_begin, int nonce_end, int diffi
         exit(1);
     }
 	
-    int gridX=1;
+    int gridX=32;
 	int gridY=1;
     int gridZ=1;
-	int blockX=1;
+	int blockX=32;
 	int blockY=1;
     int blockZ=1;
+
+    int batch_size = gridX * blockX;
     
     unsigned int sha256_k[64] = //UL = uint32
             {0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
@@ -60,35 +62,43 @@ int Gpu_miner::mine(const char *input, int nonce_begin, int nonce_end, int diffi
              0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
              0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
     
-    CUdeviceptr sha_const;
+    CUdeviceptr gpu_data, sha_const;
+    int data_size=76;
+    char* data = const_cast<char*>(input);
 
-    cuMemAlloc(&sha_const, 256);
     cuMemHostRegister(sha256_k, 256, 0);
     
+    cuMemAlloc(&sha_const, 256);
     cuMemcpyHtoD(sha_const, sha256_k, 256);
-
-    const char* data=input;
-    int size=76;
-    CUdeviceptr result;
-    cuMemAlloc(&result, 4);
-    int tmp[1]={-1};
-    cuMemcpyHtoD(result, tmp, 4);
     
-    void* args[] = {&data, &sha_const, &size, &nonce_begin, &difficulty, &result};
-    res = cuLaunchKernel(Gpu_hash, gridX, gridY, gridZ, blockX, blockY, blockZ, 0, 0, args, 0);
-    if (res != CUDA_SUCCESS){
-        printf("cannot run kernel\n");
-        exit(1);
+    cuMemHostRegister(data, data_size, 0);
+    
+    cuMemAlloc(&gpu_data, data_size);
+    cuMemcpyHtoD(gpu_data, data, data_size);
+
+    CUdeviceptr gpu_result;
+    cuMemAlloc(&gpu_result, 4);
+    int host_result[1]={-1};
+    cuMemHostRegister(host_result, 4, 0);
+    cuMemcpyHtoD(gpu_result, host_result, 4);
+    
+    for (int batch_offset = nonce_begin; batch_offset < nonce_end; batch_offset += batch_size) {
+        
+        void* args[] = {&gpu_data, &sha_const, &data_size, &batch_offset, &difficulty, &gpu_result};
+        res = cuLaunchKernel(Gpu_hash, gridX, gridY, gridZ, blockX, blockY, blockZ, 0, 0, args, 0);
+        
+        if (res != CUDA_SUCCESS){
+            printf("cannot run kernel\n");
+            exit(1);
+        }
+	    res = cuCtxSynchronize();
+        if (res != 0) printf("kuda sie wypierdolila 1 %d\n", res);
+	    cuMemcpyDtoH(host_result, gpu_result, 4);
+        if (host_result[0] != -1)
+            break;
     }
-	
-	res = cuCtxSynchronize();
-    
-    if (res != 0) printf("kuda sie wypierdolila 1 %d\n", res);
-    res = cuMemcpyDtoH((void*)tmp, result, 4);
- 
-    if (res != 0) printf("kuda sie wypierdolila 2 %d\n", res);
-    res = cuCtxDestroy(cuContext);
-    if (res != 0) printf("kuda sie wypierdolila 3\n");
 
-    return tmp[0];
+    
+    res = cuCtxDestroy(cuContext);
+    return host_result[0];
 }

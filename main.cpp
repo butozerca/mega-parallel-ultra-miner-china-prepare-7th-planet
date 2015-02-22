@@ -33,8 +33,8 @@ int main () {
     Cpu_miner cpu_miner;
     Gpu_miner gpu_miner;
 
-    int difficulty = 4;
-    int max_nonce = 1;
+    int difficulty = 25;
+    int max_nonce = 10000000;
 
 
     for (auto &s: in) {

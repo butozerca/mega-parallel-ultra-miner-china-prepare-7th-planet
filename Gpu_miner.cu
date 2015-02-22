@@ -188,52 +188,52 @@ __global__
 void Gpu_hash(const char* input, const unsigned int* sha_const, int length, int nonce_offset, int difficulty, int* result)
 {
     __shared__ char shared_mem[49152];
-    
 
-    printf("CHUJ1\n");
     if (threadIdx.x == 0)
         for (int i = 0; i < 64; ++i)
             ((unsigned int*)shared_mem)[i] = sha_const[i];
     
     __syncthreads();
 
-    printf("CHUJ2\n");
-    int nonce = nonce_offset + blockIdx.x*blockDim.x+threadIdx.x;
+    const int nonce = nonce_offset + blockIdx.x*blockDim.x+threadIdx.x;
+    
     unsigned char* nonce_input = NONCE_INPUT;
     for (int i = 0; i < length; ++i)
         nonce_input[i] = input[i];
-    for (int i = 0; i < 4; ++i) {
-        nonce_input[length+i] = nonce&255;
-        nonce>>=8;
-    }
+    memcpy(nonce_input + length, (void*)&nonce, 4);
 
-    printf("CHUJ3\n");
     unsigned char* digest = (unsigned char*)DIGEST;
  
     SHA256 ctx = SHA256();
     ctx.init(shared_mem);
-    printf("CHUJ4\n");
     ctx.update(nonce_input, length + 4, shared_mem);
-    printf("CHUJ5\n");
     ctx.final(digest, shared_mem);
-    printf("CHUJ6\n");
+    
+    /*for (int i = 0; i < blockDim.x; ++i) {
+        if(i != threadIdx.x) continue;
+        printf("gpu hashed once:\n");
+        for(int i = 0; i < 8; ++i) {
+            printf("%08x", ((int*)digest)[i]);
+        }printf("\n");
+    }*/
 
     ctx.init(shared_mem);
-    printf("CHUJ7\n");
     ctx.update(digest, 32, shared_mem);
-    printf("CHUJ8\n");
     ctx.final(nonce_input, shared_mem);
-    printf("CHUJ9\n");
     
-    printf("GPU CHUJ\n");
-    for(int i = 0; i < 32; ++i)
-        printf("%d ", nonce_input);
-    printf("\n");
-    
+   /* for (int i = 0; i < blockDim.x; ++i) {
+        if(i != threadIdx.x) continue;
+        printf("gpu hashed twice:\n");
+        for(int i = 0; i < 8; ++i) {
+            printf("%08x", ((int*)nonce_input)[i]);
+        }printf("\n");
+    }*/
+
     for (int i = 0; i < (difficulty >> 3); ++i)
         if (nonce_input[i] != 0) return;
-    if (nonce_input[difficulty >> 3] <= 255 >> (difficulty & 7))
+    if (nonce_input[difficulty >> 3] <= 255 >> (difficulty & 7)) {
         *result = nonce;
+    }
 }
 }
 
