@@ -22,10 +22,11 @@ int Cpu_miner::mine(const char *input, int nonce_begin, int nonce_end, int diffi
         memcpy(in + 76, (const void*)&j, 4);
     
         char buf[32];
-        sha256(in, 80, buf);   
+        sha256(in, 80, buf);
         sha256(buf, 32, buf);
-        if (cmp_str_n((unsigned char*)buf, (unsigned char*)threshold, (difficulty >> 3) + 1))
+        if (cmp_str_n((unsigned char*)buf, (unsigned char*)threshold, (difficulty >> 3) + 1)) {
             return j;
+        }
 	}
     return -1;
 }
